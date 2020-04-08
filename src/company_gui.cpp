@@ -86,6 +86,26 @@ static ExpensesType _expenses_list_2[] = {
 	INVALID_EXPENSES,
 };
 
+/** Better list of expenses. */
+static ExpensesType _expenses_list_3[] = {
+        EXPENSES_TRAIN_INC,
+        EXPENSES_ROADVEH_INC,
+        EXPENSES_AIRCRAFT_INC,
+        EXPENSES_SHIP_INC,
+        INVALID_EXPENSES,
+        EXPENSES_TRAIN_RUN,
+        EXPENSES_ROADVEH_RUN,
+        EXPENSES_AIRCRAFT_RUN,
+        EXPENSES_SHIP_RUN,
+        EXPENSES_PROPERTY,
+        EXPENSES_LOAN_INT,
+        INVALID_EXPENSES,
+        EXPENSES_CONSTRUCTION,
+        EXPENSES_NEW_VEHICLES,
+        EXPENSES_OTHER,
+        INVALID_EXPENSES,
+};
+
 /** Expense list container. */
 struct ExpensesList {
 	const ExpensesType *et;   ///< Expenses items.
@@ -143,7 +163,7 @@ static void DrawCategories(const Rect &r)
 	for (uint i = 0; i < _expenses_list_types[type].length; i++) {
 		const ExpensesType et = _expenses_list_types[type].et[i];
 		if (et == INVALID_EXPENSES) {
-			y += EXP_LINESPACE;
+			y += EXP_LINESPACE+5;
 			DrawString(r.left, r.right, y, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
 			y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
 		} else {
