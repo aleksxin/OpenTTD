@@ -163,7 +163,7 @@ static void DrawCategories(const Rect &r)
 	for (uint i = 0; i < _expenses_list_types[type].length; i++) {
 		const ExpensesType et = _expenses_list_types[type].et[i];
 		if (et == INVALID_EXPENSES) {
-			y += EXP_LINESPACE+5;
+			y += EXP_LINESPACE+45;
 			DrawString(r.left, r.right, y, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
 			y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
 		} else {
