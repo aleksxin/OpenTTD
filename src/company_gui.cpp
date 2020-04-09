@@ -45,7 +45,7 @@
 /** Company GUI constants. */
 static const uint EXP_LINESPACE  = 2;      ///< Amount of vertical space for a horizontal (sub-)total line.
 static const uint EXP_BLOCKSPACE = 10;     ///< Amount of vertical space between two blocks of numbers.
-static const uint EXP_SUBROWSPACE = 5;
+static const uint EXP_SUBROWSPACE = 15;
 static const uint EXP_SUBROWHIDDEN = 3;
 
 static void DoSelectCompanyManagerFace(Window *parent);
@@ -92,7 +92,7 @@ static ExpRow gs_expenses_rows2[] = {
         {EXPENSES_ROADVEH_RUN, 0, 0},
         {EXPENSES_AIRCRAFT_RUN, 0, 0},
         {EXPENSES_SHIP_RUN, 0, 0},
-        {INVALID_EXPENSES, -10, STR_FINANCES_TOTAL_GROSS},
+        {INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_GROSS},
         {EXPENSES_PROPERTY, 0, 0},
         {EXPENSES_LOAN_INT, 0, 0},
         {EXPENSES_OTHER, 0, 0},
