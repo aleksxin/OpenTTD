@@ -194,7 +194,7 @@ struct ExpensesRowList {
         uint n = 0;
         uint i = 0;
         int y = 0;
-        DEBUG(grf,1,pt);
+        DEBUG(company_gui,1,pt);
         y+=FONT_HEIGHT_NORMAL+EXP_LINESPACE;
 
         while ((i<this->length)&&(y<pt.y))
