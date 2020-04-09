@@ -150,7 +150,7 @@ static int8 GetHidden(int8 etype){
 /** Expense row list container. */
 struct ExpensesRowList {
     ExpRow *et;   ///< Expenses items.
-    const uint length;        ///< Number of items in list.
+    uint length;        ///< Number of items in list.
     uint num_subtotals; ///< Number of sub-totals in the list.
     uint num_hidden;
     uint num_closed;
@@ -723,9 +723,9 @@ struct CompanyFinancesWindow : Window {
                 int type = _settings_client.gui.expenses_layout;
                 if (c_expenses_list_types[type].ToggleRow(c_expenses_list_types[type].GetRowClicked(pt)))
                 {
-                    this->SetupWidgets();
-                    this->ReInit();
-                    //this->SetDirty();
+                    //this->SetupWidgets();
+                    //this->ReInit();
+                    this->SetDirty();
                 }
                 break;
             }
