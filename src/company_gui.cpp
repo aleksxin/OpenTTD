@@ -161,7 +161,7 @@ struct ExpensesRowList {
         for (uint i = 0; i < this->length; i++) {
             ExpRow et = this->et[i];
 
-            if (et == INVALID_EXPENSES) {
+            if (et._expense == INVALID_EXPENSES) {
                 if (et._expenseRowType < 0) {
                     if (n == 0)
                         num_subtotals++;
@@ -258,7 +258,7 @@ static const ExpensesList _expenses_list_types[] = {
  * @param r Available space for drawing.
  * @note The environment must provide padding at the left and right of \a r.
  */
-static void DrawCategoriesRows(const int x, int &y, const int right, uint i, const uint n)
+static void DrawCategoriesRows(const int x, int &y, const int right, uint i, uint n)
 {
     int type = _settings_client.gui.expenses_layout;
 
@@ -275,10 +275,10 @@ static void DrawCategoriesRows(const int x, int &y, const int right, uint i, con
                     DrawString(x, right, y, et._caption);
                 y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
             } else{
-                DrawString(x, r.right, y, et._caption);
+                DrawString(x, right, y, et._caption);
                 y += FONT_HEIGHT_NORMAL;
 
-                uint subrow=GetHidden(et._expenseRowType);
+                int8 subrow=GetHidden(et._expenseRowType);
                 if (subrow!=et._expenseRowType)
                     y += EXP_SUBROWHIDDEN;
                 else
@@ -332,7 +332,7 @@ static void DrawPrice(Money amount, int left, int right, int top)
  * @param tbl  Pointer to table of amounts for \a year.
  * @note The environment must provide padding at the left and right of \a r.
  */
-static Money DrawYearRowColumn(const int x, int &y, const int right, uint const i, uint int n, bool hidden, const Money (*tbl)[EXPENSES_END])
+static Money DrawYearRowColumn(const int x, int &y, const int right, uint i, uint n, bool hidden, const Money (*tbl)[EXPENSES_END])
 {
     int type = _settings_client.gui.expenses_layout;
     Money sum = 0;
