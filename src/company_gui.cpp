@@ -82,7 +82,7 @@ static ExpRow gs_expenses_rows[14] = {
 
 /*Better list of rows in the financial report.*/
 static ExpRow gs_expenses_rows2[] = {
-        {INVALID_EXPENSES, 132, STR_FINANCES_TOTAL_INCOME},
+        {INVALID_EXPENSES, 68, STR_FINANCES_TOTAL_INCOME},
         {EXPENSES_TRAIN_INC, 0, 0},
         {EXPENSES_ROADVEH_INC, 0, 0},
         {EXPENSES_AIRCRAFT_INC,0, 0},
@@ -95,7 +95,7 @@ static ExpRow gs_expenses_rows2[] = {
         {INVALID_EXPENSES, -10, STR_FINANCES_TOTAL_GROSS},
         {EXPENSES_PROPERTY, 0, 0},
         {EXPENSES_LOAN_INT, 0, 0},
-        {EXPENSES_OTHER, 0, ""},
+        {EXPENSES_OTHER, 0, 0},
         {INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_CAPTION},
         {EXPENSES_CONSTRUCTION, 0, 0},
         {EXPENSES_NEW_VEHICLES, 0, 0},
@@ -150,13 +150,13 @@ static int8 GetHidden(int8 etype){
 struct ExpensesRowList {
     const ExpRow *et;   ///< Expenses items.
     const uint length;        ///< Number of items in list.
-    const uint num_subtotals; ///< Number of sub-totals in the list.
-    const uint num_hidden;
+    uint num_subtotals; ///< Number of sub-totals in the list.
+    uint num_hidden;
 
     ExpensesRowList(ExpRow *et, int length) : et(et), length(length) {
         num_subtotals = 0;
         int n = 0;
-        num_hidden = 0
+        num_hidden = 0;
 
         for (uint i = 0; i < this->length; i++) {
             ExpRow et = this->et[i];
@@ -245,8 +245,8 @@ struct ExpensesList {
 };
 
 static const ExpensesRowList c_expenses_list_types[] = {
-        ExpRow(gs_expenses_rows, lengthof(gs_expenses_rows)),
-        ExpRow(gs_expenses_rows2, lengthof(gs_expenses_rows2)),
+        ExpensesRowList(gs_expenses_rows, lengthof(gs_expenses_rows)),
+        ExpensesRowList(gs_expenses_rows2, lengthof(gs_expenses_rows2)),
 };
 static const ExpensesList _expenses_list_types[] = {
 	ExpensesList(_expenses_list_1, lengthof(_expenses_list_1), 0),
@@ -258,7 +258,8 @@ static const ExpensesList _expenses_list_types[] = {
  * @param r Available space for drawing.
  * @note The environment must provide padding at the left and right of \a r.
  */
-static void DrawCategoriesRows(const int x, int &y, const int right, uint const i, uint int n){
+static void DrawCategoriesRows(const int x, int &y, const int right, uint i, const uint n)
+{
     int type = _settings_client.gui.expenses_layout;
 
     n+=i;
