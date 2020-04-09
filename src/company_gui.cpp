@@ -45,7 +45,7 @@
 /** Company GUI constants. */
 static const uint EXP_LINESPACE  = 2;      ///< Amount of vertical space for a horizontal (sub-)total line.
 static const uint EXP_BLOCKSPACE = 10;     ///< Amount of vertical space between two blocks of numbers.
-static const uint EXP_SUBROWSPACE = 15;
+static const uint EXP_SUBROWSPACE = 4;
 static const uint EXP_SUBROWHIDDEN = 3;
 
 static void DoSelectCompanyManagerFace(Window *parent);
@@ -223,7 +223,7 @@ struct ExpensesRowList {
             if (n > 0)
                 n--;
 
-
+            i++;
         }
         return i;
     }
