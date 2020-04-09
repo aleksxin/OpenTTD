@@ -45,9 +45,57 @@
 /** Company GUI constants. */
 static const uint EXP_LINESPACE  = 2;      ///< Amount of vertical space for a horizontal (sub-)total line.
 static const uint EXP_BLOCKSPACE = 10;     ///< Amount of vertical space between two blocks of numbers.
+static const uint EXP_SUBROWSPACE = 5;
+static const uint EXP_SUBROWHIDDEN = 3;
 
 static void DoSelectCompanyManagerFace(Window *parent);
 static void ShowCompanyInfrastructure(CompanyID company);
+
+/*A financial report row definiton.*/
+struct ExpRow{
+    static ExpensesType _expense;
+    in8 _expenseRowType;
+    const char* _caption;
+};
+
+/*List of rows in the financial report.*/
+static ExpRow gs_expenses_rows[] = {
+        {EXPENSES_CONSTRUCTION, 0, ""},
+        {EXPENSES_NEW_VEHICLES, 0, ""},
+        {EXPENSES_TRAIN_RUN, 0, ""},
+        {EXPENSES_ROADVEH_RUN, 0, ""},
+        {EXPENSES_AIRCRAFT_RUN, 0, ""},
+        {EXPENSES_SHIP_RUN, 0, ""},
+        {EXPENSES_PROPERTY, 0, ""},
+        {EXPENSES_TRAIN_INC, 0, ""},
+        {EXPENSES_ROADVEH_INC, 0, ""},
+        {EXPENSES_AIRCRAFT_INC,0, ""},
+        {EXPENSES_SHIP_INC, 0, ""},
+        {EXPENSES_LOAN_INT, 0, ""},
+        {EXPENSES_OTHER, 0, ""},
+        {INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_CAPTION},
+};
+
+/*Better list of rows in the financial report.*/
+static ExpRow gs_expenses_rows2[] = {
+        {INVALID_EXPENSES, 132, STR_FINANCES_TOTAL_INCOME},
+        {EXPENSES_TRAIN_INC, 0, ""},
+        {EXPENSES_ROADVEH_INC, 0, ""},
+        {EXPENSES_AIRCRAFT_INC,0, ""},
+        {EXPENSES_SHIP_INC, 0, ""},
+        {INVALID_EXPENSES, 4, STR_FINANCES_TOTAL_VEHEXPENSE},
+        {EXPENSES_TRAIN_RUN, 0, ""},
+        {EXPENSES_ROADVEH_RUN, 0, ""},
+        {EXPENSES_AIRCRAFT_RUN, 0, ""},
+        {EXPENSES_SHIP_RUN, 0, ""},
+        {INVALID_EXPENSES, -10, STR_FINANCES_TOTAL_GROSS},
+        {EXPENSES_PROPERTY, 0, ""},
+        {EXPENSES_LOAN_INT, 0, ""},
+        {EXPENSES_OTHER, 0, ""},
+        {INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_CAPTION},
+        {EXPENSES_CONSTRUCTION, 0, ""},
+        {EXPENSES_NEW_VEHICLES, 0, ""},
+};
 
 /** Standard unsorted list of expenses. */
 static ExpensesType _expenses_list_1[] = {
@@ -65,6 +113,7 @@ static ExpensesType _expenses_list_1[] = {
 	EXPENSES_LOAN_INT,
 	EXPENSES_OTHER,
 };
+
 
 /** Grouped list of expenses. */
 static ExpensesType _expenses_list_2[] = {
@@ -86,24 +135,73 @@ static ExpensesType _expenses_list_2[] = {
 	INVALID_EXPENSES,
 };
 
-/** Better list of expenses. */
-static ExpensesType _expenses_list_3[] = {
-        EXPENSES_TRAIN_INC,
-        EXPENSES_ROADVEH_INC,
-        EXPENSES_AIRCRAFT_INC,
-        EXPENSES_SHIP_INC,
-        INVALID_EXPENSES,
-        EXPENSES_TRAIN_RUN,
-        EXPENSES_ROADVEH_RUN,
-        EXPENSES_AIRCRAFT_RUN,
-        EXPENSES_SHIP_RUN,
-        EXPENSES_PROPERTY,
-        EXPENSES_LOAN_INT,
-        INVALID_EXPENSES,
-        EXPENSES_CONSTRUCTION,
-        EXPENSES_NEW_VEHICLES,
-        EXPENSES_OTHER,
-        INVALID_EXPENSES,
+static int8 GetHidden(int8 etype){
+    int8 tmp=etype;
+    tmp &= ~(1U << 6);
+    if (tmp==etype) tmp=0;
+    return tmp;
+}
+
+/** Expense row list container. */
+struct ExpensesRowList {
+    const ExpRow *et;   ///< Expenses items.
+    const uint length;        ///< Number of items in list.
+    const uint num_subtotals; ///< Number of sub-totals in the list.
+    const uint num_hidden;
+
+    ExpensesRowList(ExpRow *et, int length) : et(et), length(length) {
+        num_subtotals = 0;
+        int n = 0;
+        num_hidden = 0
+
+        for (uint i = 0; i < this->length; i++) {
+            ExpRow et = this->et[i];
+
+            if (et == INVALID_EXPENSES) {
+                if (et._expenseRowType < 0) {
+                    if (n == 0)
+                        num_subtotals++;
+                } else {
+                    int n1 = GetHidden(et._expenseRowType);
+                    if (n != 0) n += n1;
+                    if (n1 != et._expenseRowType) {
+                        if (n == 0) {
+                            num_hidden++;
+                            n = n1 + 1;
+                        }
+                    }
+                }
+
+            }
+            if (n > 0)
+                n--;
+        }
+    }
+
+    uint GetHeight() const
+    {
+        /* heading + line + texts of expenses + sub-totals + total line + total text */
+        return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_hidden * (EXP_SUBROWHIDDEN) +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
+    }
+
+    /** Compute width of the expenses categories in pixels. */
+    uint GetCategoriesWidth() const
+    {
+        uint width = 0;
+        bool invalid_expenses_measured = false; // Measure 'Total' width only once.
+        for (uint i = 0; i < this->length; i++) {
+            ExpRow et = this->et[i];
+            if (et._expense == INVALID_EXPENSES) {
+                if (!invalid_expenses_measured) {
+                    width = max(width, GetStringBoundingBox(et._caption).width);
+                    invalid_expenses_measured = true;
+                }
+            } else {
+                width = max(width, GetStringBoundingBox(STR_FINANCES_SECTION_CONSTRUCTION + et._expense).width);
+            }
+        }
+        return width;
+    }
 };
 
 /** Expense list container. */
@@ -142,6 +240,10 @@ struct ExpensesList {
 	}
 };
 
+static const ExpensesRowList c_expenses_list_types[] = {
+        ExpRow(gs_expenses_rows, lengthof(gs_expenses_rows)),
+        ExpRow(gs_expenses_rows2, lengthof(gs_expenses_rows2)),
+};
 static const ExpensesList _expenses_list_types[] = {
 	ExpensesList(_expenses_list_1, lengthof(_expenses_list_1), 0),
 	ExpensesList(_expenses_list_2, lengthof(_expenses_list_2), 3),
@@ -152,6 +254,41 @@ static const ExpensesList _expenses_list_types[] = {
  * @param r Available space for drawing.
  * @note The environment must provide padding at the left and right of \a r.
  */
+static void DrawCategoriesRows(const int x, int &y, const int right, uint const i, uint int n){
+    int type = _settings_client.gui.expenses_layout;
+
+    n+=i;
+    while (i < n) {
+        const ExpRow et = c_expenses_list_types[type].et[i];
+
+        if (et._expense == INVALID_EXPENSES) {
+            if (et._expenseRowType<0) {
+                y += EXP_LINESPACE;
+                if (et._expenseRowType==-1)
+                    DrawString(x, right, y, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
+                else
+                    DrawString(x, right, y, STR_FINANCES_TOTAL_CAPTION);
+                y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
+            } else{
+                DrawString(x, r.right, y, et._caption);
+                y += FONT_HEIGHT_NORMAL;
+
+                uint subrow=GetHidden(et._expenseRowType);
+                if (subrow!=et._expenseRowType)
+                    y += EXP_SUBROWHIDDEN;
+                else
+                    DrawCategoriesRows(x+EXP_SUBROWSPACE,y,right,i+1,subrow);
+
+                i+=subrow;
+            }
+        } else {
+            DrawString(x, right, y, STR_FINANCES_SECTION_CONSTRUCTION + et._expense);
+            y += FONT_HEIGHT_NORMAL;
+        }
+        i++;
+    }
+}
+
 static void DrawCategories(const Rect &r)
 {
 	int y = r.top;
@@ -159,20 +296,10 @@ static void DrawCategories(const Rect &r)
 	DrawString(r.left, r.right, y, STR_FINANCES_EXPENDITURE_INCOME_TITLE, TC_FROMSTRING, SA_HOR_CENTER, true);
 	y += FONT_HEIGHT_NORMAL + EXP_LINESPACE;
 
-	int type = _settings_client.gui.expenses_layout;
-	for (uint i = 0; i < _expenses_list_types[type].length; i++) {
-		const ExpensesType et = _expenses_list_types[type].et[i];
-		if (et == INVALID_EXPENSES) {
-			y += EXP_LINESPACE+45;
-			DrawString(r.left, r.right, y, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
-			y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
-		} else {
-			DrawString(r.left, r.right, y, STR_FINANCES_SECTION_CONSTRUCTION + et);
-			y += FONT_HEIGHT_NORMAL;
-		}
-	}
+    int type = _settings_client.gui.expenses_layout;
+	DrawCategoriesRows(r.left,y,r.right,0,c_expenses_list_types[type].length);
 
-	DrawString(r.left, r.right, y + EXP_LINESPACE, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
+//	DrawString(r.left, r.right, y + EXP_LINESPACE, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
 }
 
 /**
@@ -200,6 +327,54 @@ static void DrawPrice(Money amount, int left, int right, int top)
  * @param tbl  Pointer to table of amounts for \a year.
  * @note The environment must provide padding at the left and right of \a r.
  */
+static Money DrawYearRowColumn(const int x, int &y, const int right, uint const i, uint int n, bool hidden, const Money (*tbl)[EXPENSES_END])
+{
+    int type = _settings_client.gui.expenses_layout;
+    Money sum = 0;
+    n+=i;
+    while (i < n) {
+        const ExpRow et = c_expenses_list_types[type].et[i];
+
+        if (et._expense == INVALID_EXPENSES) {
+            if (et._expenseRowType<0) {
+                Money cost = sum;
+                if (!hidden){
+                    GfxFillRect(x, y, right, y, PC_BLACK);
+                    y += EXP_LINESPACE;
+                    DrawPrice(cost, x, right, y);
+                    y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
+                }
+            } else{
+                uint subrow=GetHidden(et._expenseRowType);
+                bool ishidden=(hidden||(subrow!=et._expenseRowType));
+                int cy=y;
+                if (!hidden) {
+                    y += FONT_HEIGHT_NORMAL;
+                }
+                Money cost = DrawYearRowColumn(x,y,right,i+1,subrow,ishidden, tbl);
+                sum += cost;
+                if (!hidden) {
+                    if (cost != 0) DrawPrice(cost, x, right, cy);
+
+                    if (ishidden)
+                        y += EXP_SUBROWHIDDEN;
+                }
+
+                i+=subrow;
+            }
+        } else {
+            Money cost = (*tbl)[et];
+            sum += cost;
+            if (!hidden) {
+                if (cost != 0) DrawPrice(cost, x, right, y);
+                y += FONT_HEIGHT_NORMAL;
+            }
+        }
+        i++;
+    }
+    return sum;
+}
+
 static void DrawYearColumn(const Rect &r, int year, const Money (*tbl)[EXPENSES_END])
 {
 	int y = r.top;
@@ -211,27 +386,13 @@ static void DrawYearColumn(const Rect &r, int year, const Money (*tbl)[EXPENSES_
 	Money sum = 0;
 	Money subtotal = 0;
 	int type = _settings_client.gui.expenses_layout;
-	for (uint i = 0; i < _expenses_list_types[type].length; i++) {
-		const ExpensesType et = _expenses_list_types[type].et[i];
-		if (et == INVALID_EXPENSES) {
-			Money cost = subtotal;
-			subtotal = 0;
-			GfxFillRect(r.left, y, r.right, y, PC_BLACK);
-			y += EXP_LINESPACE;
-			DrawPrice(cost, r.left, r.right, y);
-			y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
-		} else {
-			Money cost = (*tbl)[et];
-			subtotal += cost;
-			sum += cost;
-			if (cost != 0) DrawPrice(cost, r.left, r.right, y);
-			y += FONT_HEIGHT_NORMAL;
-		}
-	}
 
-	GfxFillRect(r.left, y, r.right, y, PC_BLACK);
+
+	DrawYearRowColumn(r.left,y,r.right,0,c_expenses_list_types[type].length,false,tbl);
+
+	/*GfxFillRect(r.left, y, r.right, y, PC_BLACK);
 	y += EXP_LINESPACE;
-	DrawPrice(sum, r.left, r.right, y);
+	DrawPrice(sum, r.left, r.right, y);*/
 }
 
 static const NWidgetPart _nested_company_finances_widgets[] = {
@@ -327,14 +488,14 @@ struct CompanyFinancesWindow : Window {
 		int type = _settings_client.gui.expenses_layout;
 		switch (widget) {
 			case WID_CF_EXPS_CATEGORY:
-				size->width  = _expenses_list_types[type].GetCategoriesWidth();
-				size->height = _expenses_list_types[type].GetHeight();
+				size->width  = c_expenses_list_types[type].GetCategoriesWidth();
+				size->height = c_expenses_list_types[type].GetHeight();
 				break;
 
 			case WID_CF_EXPS_PRICE1:
 			case WID_CF_EXPS_PRICE2:
 			case WID_CF_EXPS_PRICE3:
-				size->height = _expenses_list_types[type].GetHeight();
+				size->height = c_expenses_list_types[type].GetHeight();
 				FALLTHROUGH;
 
 			case WID_CF_BALANCE_VALUE:
@@ -417,7 +578,7 @@ struct CompanyFinancesWindow : Window {
 			if (!this->small) {
 				/* Check that the expenses panel height matches the height needed for the layout. */
 				int type = _settings_client.gui.expenses_layout;
-				if (_expenses_list_types[type].GetHeight() != this->GetWidget<NWidgetBase>(WID_CF_EXPS_CATEGORY)->current_y) {
+				if (c_expenses_list_types[type].GetHeight() != this->GetWidget<NWidgetBase>(WID_CF_EXPS_CATEGORY)->current_y) {
 					this->SetupWidgets();
 					this->ReInit();
 					return;
