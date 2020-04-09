@@ -36,6 +36,7 @@
 #include "station_func.h"
 #include "zoom_func.h"
 #include "sortlist_type.h"
+#include "news_func.h"
 
 #include "widgets/company_widget.h"
 
