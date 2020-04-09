@@ -142,7 +142,7 @@ static ExpensesType _expenses_list_2[] = {
 static int8 GetHidden(int8 etype){
     int8 tmp=etype;
     tmp &= ~(1U << 6);
-    if (tmp==etype) tmp=0;
+  //  if (tmp==etype) tmp=0;
     return tmp;
 }
 
@@ -258,7 +258,7 @@ static const ExpensesList _expenses_list_types[] = {
  * @param r Available space for drawing.
  * @note The environment must provide padding at the left and right of \a r.
  */
-static void DrawCategoriesRows(const int x, int &y, const int right, uint i, uint n)
+static void DrawCategoriesRows(int x, int &y, const int right, uint i, uint n)
 {
     int type = _settings_client.gui.expenses_layout;
 
@@ -332,7 +332,7 @@ static void DrawPrice(Money amount, int left, int right, int top)
  * @param tbl  Pointer to table of amounts for \a year.
  * @note The environment must provide padding at the left and right of \a r.
  */
-static Money DrawYearRowColumn(const int x, int &y, const int right, uint i, uint n, bool hidden, const Money (*tbl)[EXPENSES_END])
+static Money DrawYearRowColumn(int x, int &y, const int right, uint i, uint n, bool hidden, const Money (*tbl)[EXPENSES_END])
 {
     int type = _settings_client.gui.expenses_layout;
     Money sum = 0;
