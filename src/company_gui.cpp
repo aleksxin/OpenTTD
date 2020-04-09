@@ -155,7 +155,7 @@ struct ExpensesRowList {
     uint num_hidden;
     uint num_closed;
     bool height_measured;
-    private void measre_height(){
+    private void measure_height(){
         int n = 0;
         num_subtotals = 0;
 
@@ -263,11 +263,11 @@ struct ExpensesRowList {
         return i;
     }
 
-    uint GetHeight() const
+    uint GetHeight()
     {
         if (!height_measured)
         {
-            measre_height();
+            measure_height();
             height_measured=true;
         }
         /* heading + line + texts of expenses + sub-totals + total line + total text */
