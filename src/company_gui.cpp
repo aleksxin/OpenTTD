@@ -288,6 +288,7 @@ struct ExpensesList {
 
 	uint GetHeight() const
 	{
+        DEBUG(misc,1,"GetHeight Called.");
 		/* heading + line + texts of expenses + sub-totals + total line + total text */
 		return FONT_HEIGHT_NORMAL + EXP_LINESPACE + this->length * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + EXP_LINESPACE + FONT_HEIGHT_NORMAL;
 	}
@@ -502,10 +503,10 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 			EndContainer(),
 			NWidget(NWID_SELECTION, INVALID_COLOUR, WID_CF_SEL_MAXLOAN),
 				NWidget(NWID_HORIZONTAL),
-					NWidget(NWID_SPACER), SetFill(0, 1), SetMinimalSize(25, 0),
+					NWidget(NWID_SPACER), SetFill(0, 1), SetMinimalSize(25, 0), SetResize(1, 0),
 					NWidget(NWID_VERTICAL), // Max loan information
-						NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_MAXLOAN_GAP), SetFill(0, 0),
-						NWidget(WWT_TEXT, COLOUR_GREY, WID_CF_MAXLOAN_VALUE), SetDataTip(STR_FINANCES_MAX_LOAN, STR_NULL),
+						NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_MAXLOAN_GAP), SetFill(0, 0), SetResize(1, 0),
+						NWidget(WWT_TEXT, COLOUR_GREY, WID_CF_MAXLOAN_VALUE), SetDataTip(STR_FINANCES_MAX_LOAN, STR_NULL), SetResize(1, 0),
 						NWidget(NWID_SPACER), SetFill(0, 1), SetResize(1, 0),
 					EndContainer(),
 				EndContainer(),
