@@ -287,7 +287,7 @@ struct ExpensesList {
 	{
 	}
 
-	uint () const
+	uint GetHeight() const
 	{
         DEBUG(misc,1,"GetHeight Called !!!.");
 		/* heading + line + texts of expenses + sub-totals + total line + total text */
