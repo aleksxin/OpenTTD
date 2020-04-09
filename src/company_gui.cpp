@@ -52,28 +52,32 @@ static void DoSelectCompanyManagerFace(Window *parent);
 static void ShowCompanyInfrastructure(CompanyID company);
 
 /*A financial report row definiton.*/
-static struct ExpRow{
+struct ExpRow{
     static ExpensesType _expense;
     int8 _expenseRowType;
     const char* _caption;
+
+    ExpRow(ExpensesType expense,int8 expenseRowType,const char* caption) : _expense(_expense), _expenseRowType(_expenseRowType), _caption(_caption)
+    {
+    }
 };
 
 /*List of rows in the financial report.*/
 static ExpRow gs_expenses_rows[14] = {
-        {EXPENSES_CONSTRUCTION, 0, ""},
-        {EXPENSES_NEW_VEHICLES, 0, ""},
-        {EXPENSES_TRAIN_RUN, 0, ""},
-        {EXPENSES_ROADVEH_RUN, 0, ""},
-        {EXPENSES_AIRCRAFT_RUN, 0, ""},
-        {EXPENSES_SHIP_RUN, 0, ""},
-        {EXPENSES_PROPERTY, 0, ""},
-        {EXPENSES_TRAIN_INC, 0, ""},
-        {EXPENSES_ROADVEH_INC, 0, ""},
-        {EXPENSES_AIRCRAFT_INC,0, ""},
-        {EXPENSES_SHIP_INC, 0, ""},
-        {EXPENSES_LOAN_INT, 0, ""},
-        {EXPENSES_OTHER, 0, ""},
-        {INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_CAPTION},
+        ExpRow(EXPENSES_CONSTRUCTION, 0, ""),
+        ExpRow(EXPENSES_NEW_VEHICLES, 0, ""),
+        ExpRow(EXPENSES_TRAIN_RUN, 0, ""),
+        ExpRow(EXPENSES_ROADVEH_RUN, 0, ""),
+        ExpRow(EXPENSES_AIRCRAFT_RUN, 0, ""),
+        ExpRow(EXPENSES_SHIP_RUN, 0, ""),
+        ExpRow(EXPENSES_PROPERTY, 0, ""),
+        ExpRow(EXPENSES_TRAIN_INC, 0, ""),
+        ExpRow(EXPENSES_ROADVEH_INC, 0, ""),
+        ExpRow(EXPENSES_AIRCRAFT_INC,0, ""),
+        ExpRow(EXPENSES_SHIP_INC, 0, ""),
+        ExpRow(EXPENSES_LOAN_INT, 0, ""),
+        ExpRow(EXPENSES_OTHER, 0, ""),
+        ExpRow(INVALID_EXPENSES, -1, STR_FINANCES_TOTAL_CAPTION),
 };
 
 /*Better list of rows in the financial report.*/
