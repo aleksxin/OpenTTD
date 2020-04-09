@@ -57,7 +57,7 @@ struct ExpRow{
     int8 _expenseRowType;
     const StringID _caption;
 
-    ExpRow(ExpensesType expense,int8 expenseRowType,const char* caption) : _expense(expense), _expenseRowType(expenseRowType), _caption(caption)
+    ExpRow(ExpensesType expense,int8 expenseRowType,const StringID caption) : _expense(expense), _expenseRowType(expenseRowType), _caption(caption)
     {
     }
 };
