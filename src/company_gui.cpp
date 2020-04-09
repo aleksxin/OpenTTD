@@ -350,7 +350,7 @@ static Money DrawYearRowColumn(const int x, int &y, const int right, uint i, uin
                     y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
                 }
             } else{
-                uint subrow=GetHidden(et._expenseRowType);
+                int8 subrow=GetHidden(et._expenseRowType);
                 bool ishidden=(hidden||(subrow!=et._expenseRowType));
                 int cy=y;
                 if (!hidden) {
@@ -368,7 +368,7 @@ static Money DrawYearRowColumn(const int x, int &y, const int right, uint i, uin
                 i+=subrow;
             }
         } else {
-            Money cost = (*tbl)[et];
+            Money cost = (*tbl)[et._expense];
             sum += cost;
             if (!hidden) {
                 if (cost != 0) DrawPrice(cost, x, right, y);
