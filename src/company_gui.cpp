@@ -188,7 +188,7 @@ struct ExpensesRowList {
         }
     }
 
-    uint GetRowClicked(Point pt)
+    uint GetRowClicked(Point pt) const
     {
         uint n = 0;
         uint i = 0;
@@ -678,11 +678,13 @@ struct CompanyFinancesWindow : Window {
 				break;
 
             case WID_CF_EXPS_CATEGORY: // repay loan
+            {
                 int type = _settings_client.gui.expenses_layout;
 
 
                  CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types[type].GetRowClicked(pt));
-                break;
+                break
+            }
 
 			case WID_CF_INFRASTRUCTURE: // show infrastructure details
 				ShowCompanyInfrastructure((CompanyID)this->window_number);
