@@ -37,6 +37,7 @@
 #include "zoom_func.h"
 #include "sortlist_type.h"
 #include "news_func.h"
+#include "debug.h"
 
 #include "widgets/company_widget.h"
 
