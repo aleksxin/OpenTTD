@@ -149,7 +149,7 @@ static int8 GetHidden(int8 etype){
 
 /** Expense row list container. */
 struct ExpensesRowList {
-    const ExpRow *et;   ///< Expenses items.
+    ExpRow *et;   ///< Expenses items.
     const uint length;        ///< Number of items in list.
     uint num_subtotals; ///< Number of sub-totals in the list.
     uint num_hidden;
@@ -312,7 +312,7 @@ struct ExpensesList {
 	}
 };
 
-static const ExpensesRowList c_expenses_list_types[] = {
+static ExpensesRowList c_expenses_list_types[] = {
         ExpensesRowList(gs_expenses_rows, lengthof(gs_expenses_rows)),
         ExpensesRowList(gs_expenses_rows2, lengthof(gs_expenses_rows2)),
 };
@@ -480,9 +480,9 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 		NWidget(WWT_PANEL, COLOUR_GREY),
 			NWidget(NWID_HORIZONTAL), SetPadding(WD_FRAMERECT_TOP, WD_FRAMERECT_RIGHT, WD_FRAMERECT_BOTTOM, WD_FRAMERECT_LEFT), SetPIP(0, 9, 0),
 				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_CATEGORY), SetMinimalSize(120, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
 			EndContainer(),
 		EndContainer(),
 	EndContainer(),
@@ -703,7 +703,7 @@ struct CompanyFinancesWindow : Window {
             case WID_CF_EXPS_CATEGORY: // repay loan
             {
                 int type = _settings_client.gui.expenses_layout;
-                if (c_expenses_list_types[type].ToggleRow(c_expenses_list_types[type].GetRowClicked(pt)));
+                if (c_expenses_list_types[type].ToggleRow(c_expenses_list_types[type].GetRowClicked(pt)))
                     this->SetDirty();
                 break;
             }
