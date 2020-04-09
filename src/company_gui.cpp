@@ -190,14 +190,15 @@ struct ExpensesRowList {
 
     uint GetRowClicked(Point pt)
     {
-        int n = 0;
-        int i = 0;
-        int r = y;
+        uint n = 0;
+        uint i = 0;
+        int y = 0;
 
         y+=FONT_HEIGHT_NORMAL+EXP_LINESPACE;
 
         while ((i<this->length)&&(y<pt.y))
         {
+            ExpRow et = this->et[i];
             if (et._expense == INVALID_EXPENSES) {
                 if (et._expenseRowType < 0) {
                     if (n == 0)
