@@ -36,7 +36,6 @@
 #include "station_func.h"
 #include "zoom_func.h"
 #include "sortlist_type.h"
-#include "news_func.h"
 #include "debug.h"
 
 #include "widgets/company_widget.h"
@@ -190,12 +189,25 @@ struct ExpensesRowList {
         }
     }
 
+    bool ToggleRow(uint row) const
+    {
+        if ((et[row]._expense==INVALID_EXPENSES)&&(et[row]._expenseRowType>0))
+        {
+            if (et[row]._expenseRowType>64)
+                et[row]._expenseRowType-=64;
+            else
+                et[row]._expenseRowType+=64;
+            return true;
+        }
+        else
+            return false;
+    }
     uint GetRowClicked(Point pt) const
     {
         uint n = 0;
         uint i = 0;
-        int y = 0;
-        DEBUG(misc,1,"Here is the %d.",pt.y);
+        int y = 16;
+        //DEBUG(misc,1,"Here is the %d.",pt.y);
         y+=FONT_HEIGHT_NORMAL+EXP_LINESPACE;
 
         while ((i<this->length)&&(y<pt.y))
@@ -233,6 +245,8 @@ struct ExpensesRowList {
 
             i++;
         }
+        if (i>0) i--;
+        DEBUG(misc,1,"Clicked on the %dth row.",i);
         return i;
     }
 
@@ -492,7 +506,7 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 					NWidget(NWID_VERTICAL), // Max loan information
 						NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_MAXLOAN_GAP), SetFill(0, 0),
 						NWidget(WWT_TEXT, COLOUR_GREY, WID_CF_MAXLOAN_VALUE), SetDataTip(STR_FINANCES_MAX_LOAN, STR_NULL),
-						NWidget(NWID_SPACER), SetFill(0, 1),
+						NWidget(NWID_SPACER), SetFill(0, 1), SetResize(1, 0),
 					EndContainer(),
 				EndContainer(),
 			EndContainer(),
@@ -504,6 +518,7 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_INCREASE_LOAN), SetFill(1, 0), SetDataTip(STR_FINANCES_BORROW_BUTTON, STR_FINANCES_BORROW_TOOLTIP),
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_REPAY_LOAN), SetFill(1, 0), SetDataTip(STR_FINANCES_REPAY_BUTTON, STR_FINANCES_REPAY_TOOLTIP),
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_INFRASTRUCTURE), SetFill(1, 0), SetDataTip(STR_FINANCES_INFRASTRUCTURE_BUTTON, STR_COMPANY_VIEW_INFRASTRUCTURE_TOOLTIP),
+            NWidget(WWT_PANEL, COLOUR_GREY), SetMinimalSize(12, 12), SetFill(1, 1), SetResize(1, 0),
             NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
 	EndContainer(),
@@ -688,18 +703,8 @@ struct CompanyFinancesWindow : Window {
             case WID_CF_EXPS_CATEGORY: // repay loan
             {
                 int type = _settings_client.gui.expenses_layout;
-                int i = c_expenses_list_types[type].GetRowClicked(pt);
-                if ((i>0)){
-                    ExpRow ex=c_expenses_list_types[type].et[i-1];
-                    if (ex._expense==INVALID_EXPENSES){
-                        AddVehicleAdviceNewsItem(ex._caption ,1);
-                    }
-                    else{
-                        AddVehicleAdviceNewsItem(STR_FINANCES_SECTION_CONSTRUCTION+ex._expense,1);
-                    }
-                }
-
-
+                if (c_expenses_list_types[type].ToggleRow(c_expenses_list_types[type].GetRowClicked(pt)));
+                    this->SetDirty();
                 break;
             }
 
