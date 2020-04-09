@@ -53,11 +53,11 @@ static void ShowCompanyInfrastructure(CompanyID company);
 
 /*A financial report row definiton.*/
 struct ExpRow{
-    const ExpensesType _expense;
+    ExpensesType _expense;
     int8 _expenseRowType;
-    const char* _caption;
+    const StringID _caption;
 
-    ExpRow(ExpensesType expense,int8 expenseRowType,const char* caption) : _expense(_expense), _expenseRowType(_expenseRowType), _caption(_caption)
+    ExpRow(ExpensesType expense,int8 expenseRowType,const char* caption) : _expense(expense), _expenseRowType(expenseRowType), _caption(caption)
     {
     }
 };
