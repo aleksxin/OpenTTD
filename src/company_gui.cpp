@@ -59,7 +59,7 @@ struct ExpRow{
 };
 
 /*List of rows in the financial report.*/
-static ExpRow gs_expenses_rows[] = {
+static ExpRow gs_expenses_rows[14] = {
         {EXPENSES_CONSTRUCTION, 0, ""},
         {EXPENSES_NEW_VEHICLES, 0, ""},
         {EXPENSES_TRAIN_RUN, 0, ""},
