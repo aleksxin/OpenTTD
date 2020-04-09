@@ -45,7 +45,7 @@
 /** Company GUI constants. */
 static const uint EXP_LINESPACE  = 2;      ///< Amount of vertical space for a horizontal (sub-)total line.
 static const uint EXP_BLOCKSPACE = 10;     ///< Amount of vertical space between two blocks of numbers.
-static const uint EXP_SUBROWSPACE = 4;
+static const uint EXP_SUBROWSPACE = 5;
 static const uint EXP_SUBROWHIDDEN = 3;
 
 static void DoSelectCompanyManagerFace(Window *parent);
@@ -682,7 +682,7 @@ struct CompanyFinancesWindow : Window {
                 int type = _settings_client.gui.expenses_layout;
 
 
-                 CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types[type].GetRowClicked(pt));
+                AddVehicleAdviceNewsItem(c_expenses_list_types[type].GetRowClicked(pt),1);
                 break;
             }
 
