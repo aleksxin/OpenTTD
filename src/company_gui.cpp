@@ -188,10 +188,49 @@ struct ExpensesRowList {
         }
     }
 
+    uint GetRowClicked(Point pt)
+    {
+        int n = 0;
+        int i = 0;
+        int r = y;
+
+        y+=FONT_HEIGHT_NORMAL+EXP_LINESPACE;
+
+        while ((i<this->length)&&(y<pt.y))
+        {
+            if (et._expense == INVALID_EXPENSES) {
+                if (et._expenseRowType < 0) {
+                    if (n == 0)
+                        r+=FONT_HEIGHT_NORMAL+EXP_BLOCKSPACE + EXP_LINESPACE;
+                } else {
+                    int n1 = GetHidden(et._expenseRowType);
+                    if (n != 0)
+                        n += n1;
+                    else
+                        r+=FONT_HEIGHT_NORMAL;
+
+                    if (n1 != et._expenseRowType) {
+                        if (n == 0) {
+                            r += EXP_SUBROWHIDDEN;
+                            n = n1 + 1;
+                        }
+                    }
+                }
+
+            }
+
+            if (n > 0)
+                n--;
+
+
+        }
+        return i;
+    }
+
     uint GetHeight() const
     {
         /* heading + line + texts of expenses + sub-totals + total line + total text */
-        return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_closed * (EXP_SUBROWHIDDEN) +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
+        return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_closed * (EXP_SUBROWHIDDEN);// +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
     }
 
     /** Compute width of the expenses categories in pixels. */
@@ -456,6 +495,7 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_INCREASE_LOAN), SetFill(1, 0), SetDataTip(STR_FINANCES_BORROW_BUTTON, STR_FINANCES_BORROW_TOOLTIP),
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_REPAY_LOAN), SetFill(1, 0), SetDataTip(STR_FINANCES_REPAY_BUTTON, STR_FINANCES_REPAY_TOOLTIP),
 			NWidget(WWT_PUSHTXTBTN, COLOUR_GREY, WID_CF_INFRASTRUCTURE), SetFill(1, 0), SetDataTip(STR_FINANCES_INFRASTRUCTURE_BUTTON, STR_COMPANY_VIEW_INFRASTRUCTURE_TOOLTIP),
+            NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 		EndContainer(),
 	EndContainer(),
 };
@@ -635,6 +675,13 @@ struct CompanyFinancesWindow : Window {
 			case WID_CF_REPAY_LOAN: // repay loan
 				DoCommandP(0, 0, _ctrl_pressed, CMD_DECREASE_LOAN | CMD_MSG(STR_ERROR_CAN_T_REPAY_LOAN));
 				break;
+
+            case WID_CF_REPAY_LOAN: // repay loan
+                int type = _settings_client.gui.expenses_layout;
+
+
+                 CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types.GetRowClicked(pt));
+                break;
 
 			case WID_CF_INFRASTRUCTURE: // show infrastructure details
 				ShowCompanyInfrastructure((CompanyID)this->window_number);
