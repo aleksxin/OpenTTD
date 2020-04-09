@@ -152,11 +152,13 @@ struct ExpensesRowList {
     const uint length;        ///< Number of items in list.
     uint num_subtotals; ///< Number of sub-totals in the list.
     uint num_hidden;
+    uint num_closed;
 
     ExpensesRowList(ExpRow *et, int length) : et(et), length(length) {
         num_subtotals = 0;
         int n = 0;
-        num_hidden = 0;
+        num_hidden=0;
+        num_closed=0;
 
         for (uint i = 0; i < this->length; i++) {
             ExpRow et = this->et[i];
@@ -167,10 +169,14 @@ struct ExpensesRowList {
                         num_subtotals++;
                 } else {
                     int n1 = GetHidden(et._expenseRowType);
-                    if (n != 0) n += n1;
+                    if (n != 0) {
+                        n += n1;
+                        num_hidden+=n1;
+                    }
                     if (n1 != et._expenseRowType) {
                         if (n == 0) {
-                            num_hidden++;
+                            num_hidden+=n1;
+                            num_closed++;
                             n = n1 + 1;
                         }
                     }
@@ -185,7 +191,7 @@ struct ExpensesRowList {
     uint GetHeight() const
     {
         /* heading + line + texts of expenses + sub-totals + total line + total text */
-        return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_hidden * (EXP_SUBROWHIDDEN) +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
+        return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_closed * (EXP_SUBROWHIDDEN) +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
     }
 
     /** Compute width of the expenses categories in pixels. */
