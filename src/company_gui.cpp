@@ -202,17 +202,17 @@ struct ExpensesRowList {
             if (et._expense == INVALID_EXPENSES) {
                 if (et._expenseRowType < 0) {
                     if (n == 0)
-                        r+=FONT_HEIGHT_NORMAL+EXP_BLOCKSPACE + EXP_LINESPACE;
+                        y+=FONT_HEIGHT_NORMAL+EXP_BLOCKSPACE + EXP_LINESPACE;
                 } else {
                     int n1 = GetHidden(et._expenseRowType);
                     if (n != 0)
                         n += n1;
                     else
-                        r+=FONT_HEIGHT_NORMAL;
+                        y+=FONT_HEIGHT_NORMAL;
 
                     if (n1 != et._expenseRowType) {
                         if (n == 0) {
-                            r += EXP_SUBROWHIDDEN;
+                            y += EXP_SUBROWHIDDEN;
                             n = n1 + 1;
                         }
                     }
@@ -677,11 +677,11 @@ struct CompanyFinancesWindow : Window {
 				DoCommandP(0, 0, _ctrl_pressed, CMD_DECREASE_LOAN | CMD_MSG(STR_ERROR_CAN_T_REPAY_LOAN));
 				break;
 
-            case WID_CF_REPAY_LOAN: // repay loan
+            case WID_CF_EXPS_CATEGORY: // repay loan
                 int type = _settings_client.gui.expenses_layout;
 
 
-                 CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types.GetRowClicked(pt));
+                 CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types[type].GetRowClicked(pt));
                 break;
 
 			case WID_CF_INFRASTRUCTURE: // show infrastructure details
