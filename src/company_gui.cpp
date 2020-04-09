@@ -219,6 +219,12 @@ struct ExpensesRowList {
                 }
 
             }
+            else
+            {
+                if (n==0){
+                    y += FONT_HEIGHT_NORMAL;
+                }
+            }
 
             if (n > 0)
                 n--;
