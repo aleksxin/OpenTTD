@@ -155,7 +155,7 @@ struct ExpensesRowList {
     uint num_hidden;
     uint num_closed;
     bool height_measured;
-    private void measure_height(){
+    void measure_height(){
         int n = 0;
         num_subtotals = 0;
 
@@ -201,7 +201,7 @@ struct ExpensesRowList {
 
 
 
-    bool ToggleRow(uint row) const
+    bool ToggleRow(uint row)
     {
         if ((et[row]._expense==INVALID_EXPENSES)&&(et[row]._expenseRowType>0))
         {
