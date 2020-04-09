@@ -194,7 +194,7 @@ struct ExpensesRowList {
         uint n = 0;
         uint i = 0;
         int y = 0;
-
+        DEBUG(grf,1,pt);
         y+=FONT_HEIGHT_NORMAL+EXP_LINESPACE;
 
         while ((i<this->length)&&(y<pt.y))
@@ -465,9 +465,9 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 		NWidget(WWT_PANEL, COLOUR_GREY),
 			NWidget(NWID_HORIZONTAL), SetPadding(WD_FRAMERECT_TOP, WD_FRAMERECT_RIGHT, WD_FRAMERECT_BOTTOM, WD_FRAMERECT_LEFT), SetPIP(0, 9, 0),
 				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_CATEGORY), SetMinimalSize(120, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetResize(0, 1), SetFill(0, 0),
 			EndContainer(),
 		EndContainer(),
 	EndContainer(),
