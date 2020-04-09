@@ -687,9 +687,9 @@ struct CompanyFinancesWindow : Window {
             case WID_CF_EXPS_CATEGORY: // repay loan
             {
                 int type = _settings_client.gui.expenses_layout;
-                int i = c_expenses_list_types[type].GetRowClicked(p);
+                int i = c_expenses_list_types[type].GetRowClicked(pt);
                 if ((i>0)){
-                    ExpRow ex=c_expenses_list_types[Type].et[i-1];
+                    ExpRow ex=c_expenses_list_types[type].et[i-1];
                     if (ex._expense==INVALID_EXPENSES){
                         AddVehicleAdviceNewsItem(ex._caption ,1);
                     }
