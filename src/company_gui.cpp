@@ -154,10 +154,11 @@ struct ExpensesRowList {
     uint num_subtotals; ///< Number of sub-totals in the list.
     uint num_hidden;
     uint num_closed;
-
-    ExpensesRowList(ExpRow *et, int length) : et(et), length(length) {
-        num_subtotals = 0;
+    bool height_measured;
+    private void measre_height(){
         int n = 0;
+        num_subtotals = 0;
+
         num_hidden=0;
         num_closed=0;
 
@@ -188,6 +189,17 @@ struct ExpensesRowList {
                 n--;
         }
     }
+    ExpensesRowList(ExpRow *et, int length) : et(et), length(length) {
+        height_measured=false;
+        num_subtotals = 0;
+
+        num_hidden=0;
+        num_closed=0;
+
+
+    }
+
+
 
     bool ToggleRow(uint row) const
     {
@@ -201,6 +213,7 @@ struct ExpensesRowList {
         }
         else
             return false;
+        height_measured=false;
     }
     uint GetRowClicked(Point pt) const
     {
@@ -246,13 +259,17 @@ struct ExpensesRowList {
             i++;
         }
         if (i>0) i--;
-        DEBUG(misc,1,"Clicked on the %dth row.",i);
+        //DEBUG(misc,1,"Clicked on the %dth row.",i);
         return i;
     }
 
     uint GetHeight() const
     {
-        DEBUG(misc,1,"GetHeight Called !!!.");
+        if (!height_measured)
+        {
+            measre_height();
+            height_measured=true;
+        }
         /* heading + line + texts of expenses + sub-totals + total line + total text */
         return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_closed * (EXP_SUBROWHIDDEN);// +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
     }
@@ -289,7 +306,6 @@ struct ExpensesList {
 
 	uint GetHeight() const
 	{
-        DEBUG(misc,1,"GetHeight Called !!!.");
 		/* heading + line + texts of expenses + sub-totals + total line + total text */
 		return FONT_HEIGHT_NORMAL + EXP_LINESPACE + this->length * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + EXP_LINESPACE + FONT_HEIGHT_NORMAL;
 	}
@@ -482,9 +498,9 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 		NWidget(WWT_PANEL, COLOUR_GREY),
 			NWidget(NWID_HORIZONTAL), SetPadding(WD_FRAMERECT_TOP, WD_FRAMERECT_RIGHT, WD_FRAMERECT_BOTTOM, WD_FRAMERECT_LEFT), SetPIP(0, 9, 0),
 				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_CATEGORY), SetMinimalSize(120, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetFill(1, 0), SetResize(1, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetFill(1, 0), SetResize(1, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetFill(1, 0), SetResize(1, 0),
 			EndContainer(),
 		EndContainer(),
 	EndContainer(),
@@ -506,9 +522,9 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 				NWidget(NWID_HORIZONTAL),
 					NWidget(NWID_SPACER), SetFill(0, 1), SetMinimalSize(25, 0), SetResize(1, 0),
 					NWidget(NWID_VERTICAL), // Max loan information
-						NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_MAXLOAN_GAP), SetFill(0, 0), SetResize(1, 0),
+						NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_MAXLOAN_GAP), SetFill(1, 0), SetResize(1, 0),
 						NWidget(WWT_TEXT, COLOUR_GREY, WID_CF_MAXLOAN_VALUE), SetDataTip(STR_FINANCES_MAX_LOAN, STR_NULL), SetResize(1, 0),
-						NWidget(NWID_SPACER), SetFill(0, 1), SetResize(1, 0),
+						NWidget(NWID_SPACER), SetFill(1, 1), SetResize(1, 0),
 					EndContainer(),
 				EndContainer(),
 			EndContainer(),
