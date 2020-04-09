@@ -683,7 +683,7 @@ struct CompanyFinancesWindow : Window {
 
 
                  CMD_MSG(STR_FINANCES_SECTION_CONSTRUCTION+c_expenses_list_types[type].GetRowClicked(pt));
-                break
+                break;
             }
 
 			case WID_CF_INFRASTRUCTURE: // show infrastructure details
