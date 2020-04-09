@@ -252,6 +252,7 @@ struct ExpensesRowList {
 
     uint GetHeight() const
     {
+        DEBUG(misc,1,"GetHeight Called !!!.");
         /* heading + line + texts of expenses + sub-totals + total line + total text */
         return FONT_HEIGHT_NORMAL + EXP_LINESPACE + (this->length - num_hidden) * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + num_closed * (EXP_SUBROWHIDDEN);// +EXP_LINESPACE + FONT_HEIGHT_NORMAL;
     }
@@ -286,9 +287,9 @@ struct ExpensesList {
 	{
 	}
 
-	uint GetHeight() const
+	uint () const
 	{
-        DEBUG(misc,1,"GetHeight Called.");
+        DEBUG(misc,1,"GetHeight Called !!!.");
 		/* heading + line + texts of expenses + sub-totals + total line + total text */
 		return FONT_HEIGHT_NORMAL + EXP_LINESPACE + this->length * FONT_HEIGHT_NORMAL + num_subtotals * (EXP_BLOCKSPACE + EXP_LINESPACE) + EXP_LINESPACE + FONT_HEIGHT_NORMAL;
 	}
@@ -481,9 +482,9 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 		NWidget(WWT_PANEL, COLOUR_GREY),
 			NWidget(NWID_HORIZONTAL), SetPadding(WD_FRAMERECT_TOP, WD_FRAMERECT_RIGHT, WD_FRAMERECT_BOTTOM, WD_FRAMERECT_LEFT), SetPIP(0, 9, 0),
 				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_CATEGORY), SetMinimalSize(120, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
-				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetResize(1, 0), SetFill(0, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE1), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE2), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
+				NWidget(WWT_EMPTY, COLOUR_GREY, WID_CF_EXPS_PRICE3), SetMinimalSize(86, 0), SetFill(0, 0), SetResize(1, 0),
 			EndContainer(),
 		EndContainer(),
 	EndContainer(),
@@ -578,7 +579,7 @@ struct CompanyFinancesWindow : Window {
 			case WID_CF_LOAN_VALUE:
 			case WID_CF_TOTAL_VALUE:
 				SetDParamMaxValue(0, CompanyFinancesWindow::max_money);
-				size->width = max(GetStringBoundingBox(STR_FINANCES_NEGATIVE_INCOME).width, GetStringBoundingBox(STR_FINANCES_POSITIVE_INCOME).width) + padding.width;
+				//size->width = max(GetStringBoundingBox(STR_FINANCES_NEGATIVE_INCOME).width, GetStringBoundingBox(STR_FINANCES_POSITIVE_INCOME).width) + padding.width;
 				break;
 
 			case WID_CF_MAXLOAN_GAP:
@@ -705,7 +706,11 @@ struct CompanyFinancesWindow : Window {
             {
                 int type = _settings_client.gui.expenses_layout;
                 if (c_expenses_list_types[type].ToggleRow(c_expenses_list_types[type].GetRowClicked(pt)))
-                    this->SetDirty();
+                {
+                    this->SetupWidgets();
+                    this->ReInit();
+                    //this->SetDirty();
+                }
                 break;
             }
 
