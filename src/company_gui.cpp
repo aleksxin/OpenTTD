@@ -52,7 +52,7 @@ static void DoSelectCompanyManagerFace(Window *parent);
 static void ShowCompanyInfrastructure(CompanyID company);
 
 /*A financial report row definiton.*/
-struct ExpRow{
+static struct ExpRow{
     static ExpensesType _expense;
     int8 _expenseRowType;
     const char* _caption;
@@ -265,9 +265,9 @@ static void DrawCategoriesRows(const int x, int &y, const int right, uint const 
             if (et._expenseRowType<0) {
                 y += EXP_LINESPACE;
                 if (et._expenseRowType==-1)
-                    DrawString(x, right, y, STR_FINANCES_TOTAL_CAPTION, TC_FROMSTRING, SA_RIGHT);
+                    DrawString(x, right, y, et._caption, TC_FROMSTRING, SA_RIGHT);
                 else
-                    DrawString(x, right, y, STR_FINANCES_TOTAL_CAPTION);
+                    DrawString(x, right, y, et._caption);
                 y += FONT_HEIGHT_NORMAL + EXP_BLOCKSPACE;
             } else{
                 DrawString(x, r.right, y, et._caption);
