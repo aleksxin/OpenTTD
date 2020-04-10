@@ -543,6 +543,7 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
             NWidget(WWT_PANEL, COLOUR_GREY), SetFill(1, 1), SetResize(1, 0), EndContainer(),
 
 		EndContainer(),
+    NWidget(WWT_PANEL, COLOUR_GREY), SetMinimalSize(0, 12), SetResize(1, 0), SetFill(1, 1), EndContainer(),
         NWidget(WWT_RESIZEBOX, COLOUR_GREY),
 	EndContainer(),
 };
