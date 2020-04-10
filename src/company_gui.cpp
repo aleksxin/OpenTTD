@@ -529,7 +529,7 @@ static const NWidgetPart _nested_company_finances_widgets[] = {
 					EndContainer(),
 				EndContainer(),
 			EndContainer(),
-			NWidget(NWID_SPACER), SetFill(1, 1),
+			NWidget(NWID_SPACER), SetFill(1, 1), SetResize(1, 0)
 		EndContainer(),
 	EndContainer(),
 	NWidget(NWID_SELECTION, INVALID_COLOUR, WID_CF_SEL_BUTTONS),
