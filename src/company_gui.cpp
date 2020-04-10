@@ -46,7 +46,7 @@
 /** Company GUI constants. */
 static const uint EXP_LINESPACE  = 2;      ///< Amount of vertical space for a horizontal (sub-)total line.
 static const uint EXP_BLOCKSPACE = 10;     ///< Amount of vertical space between two blocks of numbers.
-static const uint EXP_SUBROWSPACE = -25;
+static const uint EXP_SUBROWSPACE = 6;
 static const uint EXP_SUBROWHIDDEN = 3;
 
 static void DoSelectCompanyManagerFace(Window *parent);
